@@ -51,12 +51,12 @@
 
 var express = require('express');
 var app = express();
-var apiRouter=require("./routes/api");
+var userRouter=require("./routes/users");
 
 app.get('/', function(req,res){
     res.send("node启动成功")
 });
-app.use('/api', apiRouter);
+app.use('/api/users', userRouter);
 
 app.listen(3000, () => {
     console.log('node服务器监听3000端口成功');
