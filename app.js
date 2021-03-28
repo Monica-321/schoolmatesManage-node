@@ -50,13 +50,24 @@
 // module.exports = app;
 
 var express = require('express');
+var bodyParser = require('body-parser')
+
 var app = express();
 var userRouter=require("./routes/users");
+var schoolMateRouter=require("./routes/schoolMates");
+var schoolCompanyRouter=require("./routes/schoolCompanies");
 
 app.get('/', function(req,res){
     res.send("node启动成功")
 });
+// 解析 application/json
+app.use(bodyParser.json());	
+// 解析 application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use('/api/users', userRouter);
+app.use('/api/schoolMates', schoolMateRouter);
+app.use('/api/schoolCompanies', schoolCompanyRouter);
 
 app.listen(3000, () => {
     console.log('node服务器监听3000端口成功');
