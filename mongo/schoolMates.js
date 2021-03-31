@@ -9,6 +9,7 @@ var schoolMateSchema = new Schema({
     nationality:{type:String},//民族
     birthDate:{type:String},//出生日期
     faculty:{type:String},//院系？
+    educationStatus:{type:Number},//就读身份？0本科生1研究生
     yearOfEnrollment:{type:String},//入学年份
     yearOfGraduation:{type:String},//毕业年份
     politicalStatus:{type:String},//政治面貌
