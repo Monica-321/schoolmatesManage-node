@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');//加载mongoose包；
 
-var DB_URL = 'mongodb://localhost:27017/test'; 
+var DB_URL = 'mongodb://localhost:27017/alumni'; 
 /** * 连接mongodb的字符串 */
 //mongoosesample 是标识的数据库名称
 mongoose.connect(DB_URL); /** *启动连接数据库 */

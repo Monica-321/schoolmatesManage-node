@@ -2,6 +2,15 @@ var express = require('express');
 var router = express.Router();
 var Major=require("../mongo/majors");
 
+//专业json例子
+// {
+//   "majorId":"em",
+//   "majorName":"电子信息工程",
+//   "majorType":0,
+//   "belongYear":[2017,2018,2019,2020,2021],
+//   "classNum":3
+// }
+
   //查询专业
   router.post('/majorsList', function(req, res, next) {
     Major.find({},function(err,result){
