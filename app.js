@@ -53,7 +53,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 
 var app = express();
-// var adminRouter=require("./routes/schoolAdmins");
+var schoolAdminRouter=require("./routes/schoolAdmins");
 var schoolMateRouter=require("./routes/schoolMates");
 // var schoolCompanyRouter=require("./routes/schoolCompanies");
 var majorRouter=require("./routes/majors");
@@ -66,7 +66,7 @@ app.use(bodyParser.json());
 // 解析 application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use('/api/admins', adminRouter);
+app.use('/api/schoolAdmins', schoolAdminRouter);
 app.use('/api/schoolMates', schoolMateRouter);
 // app.use('/api/schoolCompanies', schoolCompanyRouter);
 app.use('/api/majors', majorRouter);
