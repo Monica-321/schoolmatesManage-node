@@ -55,7 +55,7 @@ var bodyParser = require('body-parser')
 var app = express();
 var schoolAdminRouter=require("./routes/schoolAdmins");
 var schoolMateRouter=require("./routes/schoolMates");
-// var schoolCompanyRouter=require("./routes/schoolCompanies");
+var schoolCompanyRouter=require("./routes/schoolCompanies");
 var majorRouter=require("./routes/majors");
 
 app.get('/', function(req,res){
@@ -68,7 +68,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/schoolAdmins', schoolAdminRouter);
 app.use('/api/schoolMates', schoolMateRouter);
-// app.use('/api/schoolCompanies', schoolCompanyRouter);
+app.use('/api/schoolCompanies', schoolCompanyRouter);
 app.use('/api/majors', majorRouter);
 
 app.listen(3000, () => {
