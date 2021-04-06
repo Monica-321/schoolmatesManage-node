@@ -47,7 +47,7 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
   });
 
     //查询管理员账户
-  router.get('/adminusersQuery', function(req, res, next) {
+  router.post('/adminsList', function(req, res, next) {
     SchoolAdmin.find({},function(err,result){
         if(err){
             res.json({success:false,msg:"查询发生错误"});
@@ -55,10 +55,12 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
             res.json({
               success:true,
               msg:"查询成功",
-              data:result
+              data:{
+                total:result.length,
+                list:[...result]
+              },
             });
         }
-        console.log('getData尝试：',result)
     })
   });
 
@@ -98,6 +100,38 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
           }
         }
       }
+    });
+  });
+
+  //添加
+  router.post('/adminsCreate', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"创建成功",
+    });
+  });
+
+  //编辑
+  router.post('/adminsUpdate', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"编辑成功",
+    });
+  });
+
+  //删除管理员
+  router.post('/adminsDelete', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"删除成功",
+    });
+  });
+
+  //启用停用管理员
+  router.get('/adminsToOnOrOff', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"启/停用成功",
     });
   });
 
