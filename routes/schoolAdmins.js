@@ -64,7 +64,7 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
     })
   });
 
-  //更新账户、创建、启用/停用
+  //启用/停用
 
 
   //个人基本信息查询
@@ -100,6 +100,22 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
           }
         }
       }
+    });
+  });
+
+  //个人基本信息修改
+  router.post('/modifyUserInfo', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"更新成功",
+    });
+  });
+
+  //个人密码修改
+  router.post('/modifyUserPwd', function(req, res, next) {
+    res.json({
+      success:true,
+      msg:"更新成功",
     });
   });
 
