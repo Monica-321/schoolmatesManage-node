@@ -24,8 +24,8 @@ var SchoolCompany=require("../mongo/schoolCompanies");
   router.post('/schoolCompaniesCreate', function(req, res) {
     const data=req.body
     // console.log('添加校友的req\n',req);  //没有req.body？body-parser
-    const schoolMate=new SchoolCompany(data)  //实例化对象，新建数据
-    schoolMate.save(function (err,ret){
+    const schoolCompany=new SchoolCompany(data)  //实例化对象，新建数据
+    schoolCompany.save(function (err,ret){
       if(err){
         console.log('添加失败的err，',err);
         res.json({
@@ -55,9 +55,27 @@ var SchoolCompany=require("../mongo/schoolCompanies");
 
   //查询校友企业详情
   router.get('/schoolCompaniesDetail', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"查询成功",
+    const _id=req.query._id
+    SchoolCompany.find({_id:_id},function (err,result){
+      if(err){
+        res.json({
+          success:false,
+          msg:"查询失败",
+        });
+      }else{
+        if(result.length<=0){
+          res.json({
+            success:false,
+            msg:"没有该数据！",
+          });
+        }else{
+          res.json({
+            success:true,
+            msg:"查询成功",
+            data:result[0],
+          });
+        }
+      }
     });
   });
 

@@ -56,12 +56,29 @@ var SchoolMate=require("../mongo/schoolMates");
 
   //查询校友详情
   router.get('/schoolMatesDetail', function(req, res, next) {
-    // const data=req.body
-    // console.log('查询校友详情的req\n',req.params,req.body);
-    // SchoolMate.find({},function (err,ret){ });
-    res.json({
-      success:true,
-      msg:"查询成功",
+    const id=req.query.id
+    // console.log('查询校友详情的req\n',req.query,id);
+    SchoolMate.find({id:id},function (err,result){
+      // console.log(err,result)
+      if(err){
+        res.json({
+          success:false,
+          msg:"查询失败",
+        });
+      }else{
+        if(result.length<=0){
+          res.json({
+            success:false,
+            msg:"没有该学号的数据！",
+          });
+        }else{
+          res.json({
+            success:true,
+            msg:"查询成功",
+            data:result[0],
+          });
+        }
+      }
     });
   });
 
