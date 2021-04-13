@@ -57,6 +57,7 @@ var schoolAdminRouter=require("./routes/schoolAdmins");
 var schoolMateRouter=require("./routes/schoolMates");
 var schoolCompanyRouter=require("./routes/schoolCompanies");
 var majorRouter=require("./routes/majors");
+var dataAnalyRouter=require("./routes/dataAnalysis");
 
 app.get('/', function(req,res){
     res.send("node启动成功")
@@ -70,6 +71,7 @@ app.use('/api/schoolAdmins', schoolAdminRouter);
 app.use('/api/schoolMates', schoolMateRouter);
 app.use('/api/schoolCompanies', schoolCompanyRouter);
 app.use('/api/majors', majorRouter);
+app.use('/api/dataAnalysis', dataAnalyRouter);
 
 app.listen(3000, () => {
     console.log('node服务器监听3000端口成功');
