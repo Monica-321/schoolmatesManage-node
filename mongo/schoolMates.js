@@ -9,7 +9,7 @@ var schoolMateSchema = new Schema({
     nationality:{type:String},//民族[56｜1]
     birthDate:{type:String},//出生日期[pincou]
     faculty:{type:String},//院系[xinxixueyuan]
-    educationStatus:{type:Number},//就读身份？0本科生1研究生[2|1]
+    educationStatus:{type:String},//就读身份？0本科生1研究生[2|1]
     yearOfEnrollment:{type:String},//入学年份["2017","2016","2015","2014","2013"]
     yearOfGraduation:{type:String},//毕业年份["2021","2020","2019","2018","2017","2016"]
     politicalStatus:{type:String},//政治面貌[4|1]

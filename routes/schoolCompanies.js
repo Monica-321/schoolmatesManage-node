@@ -4,52 +4,71 @@ var SchoolCompany=require("../mongo/schoolCompanies");
 
   //查询校友企业
   router.post('/schoolCompaniesList', function(req, res, next) {
-    SchoolCompany.find({},function(err,result){
-        if(err){
+    console.log('schoolCompaniesList',req.body)
+    const params={...req.body}
+    delete params.pageNum
+    delete params.pageSize
+    let total
+    SchoolCompany.find({...params}).exec((err, result) => {
+      if(err) {
+        res.json({success:false,msg:"查询发生错误"});
+      } else {
+        total=result.length
+        let queryResult = SchoolCompany.find({...params}).limit(req.body.pageSize).skip((req.body.pageNum - 1) * req.body.pageSize);
+        queryResult.exec((err, result) => {
+          if(err) {
             res.json({success:false,msg:"查询发生错误"});
-        }else{
+          } else {
             res.json({
               success:true,
               msg:"查询成功",
               data:{
-                total:result.length,
+                total,
                 list:[...result]
               },
             });
-        }
+          }
+        })
+      }
     })
   });
 
     //添加校友企业
   router.post('/schoolCompaniesCreate', function(req, res) {
-    const data=req.body
-    // console.log('添加校友的req\n',req);  //没有req.body？body-parser
-    const schoolCompany=new SchoolCompany(data)  //实例化对象，新建数据
-    schoolCompany.save(function (err,ret){
+    console.log('schoolCompaniesCreate',req.body)
+    const params={
+      ...req.body
+    }
+    const schoolCompany=new SchoolCompany({...params})
+    schoolCompany.save(function(err,result){
       if(err){
-        console.log('添加失败的err，',err);
+        //TODO 具体错误 比如姓名啥的重复？
+        console.log(err)
+        res.json({success:false,msg:"添加失败"});
+      }else{
         res.json({
-          success:false,
-          msg:"添加失败",
-          // data:1
+          success:true,
+          msg:"添加成功",
         });
       }
-      else {
-          // console.log('插入成功',ret);  //ret是成功的数据
-          res.json({
-            success:true,
-            msg:"添加成功",
-            // data:1
-          });
-      }
-    });
+    })
   });
 
   //编辑校友企业
   router.post('/schoolCompaniesUpdate', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"更新成功",
+    const {_id,companyName,companyType,companySize,companyCity,companyAddress,companyWebsite,companyPhone,companyEmail,companyDescription}=req.body
+    SchoolCompany.updateOne({_id},
+      { $set:{companyName,companyType,companySize,companyCity,companyAddress,companyWebsite,companyPhone,companyEmail,companyDescription}},function (err, result) {
+      if (err) {
+        //TODO 具体错误 比如姓名啥的重复？
+        console.log(err)
+        res.json({success:false,msg:"更新失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"更新成功",
+        });
+      }
     });
   });
 
@@ -81,9 +100,19 @@ var SchoolCompany=require("../mongo/schoolCompanies");
 
   //删除校友企业
   router.post('/schoolCompaniesDelete', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"删除成功",
+    const {_id}=req.body
+    SchoolCompany.deleteOne({_id},
+      function (err, result) {
+      if (err) {
+        //TODO 具体错误？
+        console.log(err)
+        res.json({success:false,msg:"删除失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"删除成功",
+        });
+      }
     });
   });
 

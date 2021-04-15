@@ -48,19 +48,34 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
 
     //查询管理员账户
   router.post('/adminsList', function(req, res, next) {
-    SchoolAdmin.find({},function(err,result){
-        if(err){
+    console.log('adminsList',req.body)
+    const params={...req.body}
+    delete params.pageNum
+    delete params.pageSize
+    // SchoolAdmin.find({...params}).limit(req.body.pageSize).skip((req.body.pageNum-1)*req.body.pageSize).then((res)=>{
+
+    let total
+    SchoolAdmin.find({...params}).exec((err, result) => {
+      if(err) {
+        res.json({success:false,msg:"查询发生错误"});
+      } else {
+        total=result.length
+        let queryResult = SchoolAdmin.find({...params}).limit(req.body.pageSize).skip((req.body.pageNum - 1) * req.body.pageSize);
+        queryResult.exec((err, result) => {
+          if(err) {
             res.json({success:false,msg:"查询发生错误"});
-        }else{
+          } else {
             res.json({
               success:true,
               msg:"查询成功",
               data:{
-                total:result.length,
+                total,
                 list:[...result]
               },
             });
-        }
+          }
+        })
+      }
     })
   });
 
@@ -105,49 +120,128 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
 
   //个人基本信息修改
   router.post('/modifyUserInfo', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"更新成功",
+    // TODO 没有别的前提条件等的话可以和编辑的接口合并下
+    const {username,phone,email}=req.body
+    SchoolAdmin.updateOne({username},
+      { $set:{phone,email}},function (err, result) {
+      if (err) {
+        //TODO 具体错误 比如姓名啥的重复？
+        console.log(err)
+        res.json({success:false,msg:"更新失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"更新成功",
+        });
+      }
     });
   });
 
   //个人密码修改
   router.post('/modifyUserPwd', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"更新成功",
-    });
+    // 先判断原密码是否相同
+    const {username,oldPwd,newPwd}=req.body
+    SchoolAdmin.findOne({username},function(err,result){
+      if(err){
+          res.json({success:false,msg:"查询发生错误"});
+      }else{
+        if(result.password!==oldPwd){
+          res.json({success:false,msg:"原密码不正确"});
+        }else{
+           // 然后相同就修改成新密码
+          SchoolAdmin.updateOne({username},
+            { $set:{password:newPwd}},function (err, result) {
+            if (err) {
+              console.log(err)
+              res.json({success:false,msg:"更新失败"});
+            } else {
+              res.json({
+                success:true,
+                msg:"更新成功",
+              });
+            }
+          });
+        }
+      }
+    })
   });
 
   //添加
   router.post('/adminsCreate', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"创建成功",
-    });
+    console.log('adminsCreate',req.body)
+    const params={
+      password:'123456a',
+      ...req.body
+    }
+    const schoolAdmin=new SchoolAdmin({...params})
+    schoolAdmin.save(function(err,result){
+      if(err){
+        //TODO 具体错误 比如姓名啥的重复？
+        console.log(err)
+        res.json({success:false,msg:"创建失败"});
+      }else{
+        res.json({
+          success:true,
+          msg:"创建成功",
+        });
+      }
+    })
   });
 
   //编辑
   router.post('/adminsUpdate', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"编辑成功",
+    const {_id,phone,email}=req.body
+    // console.log('adminsUpdate',req.body)
+    SchoolAdmin.updateOne({_id},
+      { $set:{phone,email}},function (err, result) {
+      if (err) {
+        //TODO 具体错误 比如姓名啥的重复？
+        console.log(err)
+        res.json({success:false,msg:"更新失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"更新成功",
+        });
+      }
     });
   });
 
   //删除管理员
   router.post('/adminsDelete', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"删除成功",
+    const {_id}=req.body
+    // console.log('adminsDelete',req.body)
+    SchoolAdmin.deleteOne({_id},
+      function (err, result) {
+      if (err) {
+        //TODO 具体错误？
+        console.log(err)
+        res.json({success:false,msg:"删除失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"删除成功",
+        });
+      }
     });
   });
 
   //启用停用管理员
   router.get('/adminsToOnOrOff', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"启/停用成功",
+    const {_id,status}=req.query
+    // console.log('adminsToOnOrOff',req.body)
+    SchoolAdmin.updateOne({_id},
+      { $set:{status}},function (err, result) {
+      if (err) {
+        //TODO 具体错误？
+        console.log(err)
+        res.json({success:false,msg:"操作失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"操作成功",
+        });
+      }
     });
   });
 

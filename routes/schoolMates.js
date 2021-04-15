@@ -4,35 +4,75 @@ var SchoolMate=require("../mongo/schoolMates");
 
   //查询校友
   router.post('/schoolMatesList', function(req, res, next) {
-    SchoolMate.find({},function(err,result){
-        if(err){
+    console.log('schoolMatesList',req.body)
+    const params={...req.body}
+    delete params.pageNum
+    delete params.pageSize
+    let total
+    SchoolMate.find({...params}).exec((err, result) => {
+      if(err) {
+        res.json({success:false,msg:"查询发生错误"});
+      } else {
+        total=result.length
+        let queryResult = SchoolMate.find({...params}).limit(req.body.pageSize).skip((req.body.pageNum - 1) * req.body.pageSize);
+        queryResult.exec((err, result) => {
+          if(err) {
             res.json({success:false,msg:"查询发生错误"});
-        }else{
+          } else {
             res.json({
               success:true,
               msg:"查询成功",
-              // total:result.length(),
               data:{
-                total:result.length,
+                total,
                 list:[...result]
               },
             });
-        }
+          }
+        })
+      }
     })
+  });
+
+  //检查学号
+  router.get('/schoolMatesIdCheck', function(req, res, next) {
+    const id=req.query.id
+    console.log('schoolMatesIdCheck',req.query)
+    SchoolMate.find({id:id},function (err,result){
+      if(err){
+        res.json({
+          success:false,
+          msg:"查询失败",
+        });
+      }else{
+        if(result.length<=0){
+          res.json({
+            success:true,
+            msg:"目前没有该学号！",
+          });
+        }else{
+          res.json({
+            success:false,
+            msg:"该学号已存在",
+          });
+        }
+      }
+    });
   });
 
     //添加校友
   router.post('/schoolMatesCreate', function(req, res) {
-    const data=req.body
-    // console.log('添加校友的req\n',req);  //没有req.body？body-parser
-    const schoolMate=new SchoolMate(data)  //实例化对象，新建数据
+    // console.log('schoolMatesCreate',req.body);  //没有req.body？body-parser
+    const params={
+      ...req.body
+    }
+    const schoolMate=new SchoolMate({...params})  //实例化对象，新建数据
     schoolMate.save(function (err,ret){
       if(err){
-        console.log('添加失败的err，',err);
+        // console.log('添加失败的err，',err);
+        //TODO 具体错误？
         res.json({
           success:false,
           msg:"添加失败",
-          // data:1
         });
       }
       else {
@@ -48,9 +88,23 @@ var SchoolMate=require("../mongo/schoolMates");
 
   //编辑校友
   router.post('/schoolMatesUpdate', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"更新成功",
+    const {id,name,gender,nationality,birthDate,faculty,educationStatus,politicalStatus,
+      homeTown,srcPlace,dstPlace,yearOfEnrollment,yearOfGraduation,major,majorClass,graduateChoice,
+      contactPhone,contactEmail,contactAddress,workArea,job,companyRank,companySize,salary}=req.body
+    SchoolMate.updateOne({id},
+      { $set:{name,gender,nationality,birthDate,faculty,educationStatus,politicalStatus,
+        homeTown,srcPlace,dstPlace,yearOfEnrollment,yearOfGraduation,major,majorClass,graduateChoice,
+        contactPhone,contactEmail,contactAddress,workArea,job,companyRank,companySize,salary}},function (err, result) {
+      if (err) {
+        //TODO 具体错误？
+        console.log(err)
+        res.json({success:false,msg:"更新失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"更新成功",
+        });
+      }
     });
   });
 
@@ -84,9 +138,19 @@ var SchoolMate=require("../mongo/schoolMates");
 
   //删除校友
   router.post('/schoolMatesDelete', function(req, res, next) {
-    res.json({
-      success:true,
-      msg:"删除成功",
+    const {id}=req.body
+    SchoolMate.deleteOne({id},
+      function (err, result) {
+      if (err) {
+        //TODO 具体错误？
+        console.log(err)
+        res.json({success:false,msg:"删除失败"});
+      } else {
+        res.json({
+          success:true,
+          msg:"删除成功",
+        });
+      }
     });
   });
 
