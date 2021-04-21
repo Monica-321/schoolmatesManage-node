@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var SchoolMate=require("../mongo/schoolMates");
+var SchoolMate=require("../models/schoolMates");
 
   //查询校友
   router.post('/schoolMatesList', function(req, res, next) {
@@ -155,5 +155,37 @@ var SchoolMate=require("../mongo/schoolMates");
   });
 
   //批量添加？
+
+
+ //查询专业与班级数（影像tab）
+ router.get('/getMajorAndClass', function(req, res, next) {
+  const {educationStatus,yearOfGraduation}=req.query
+  SchoolMate.aggregate([
+    {$match:{yearOfGraduation,educationStatus}},
+    {$group:
+        {
+            _id:'$major',
+            value:{$sum:1}
+        }
+    }
+  ],function (err,result){
+    if(err){
+      res.json({
+        success:false,
+        msg:"查询失败",
+      });
+    }else{
+      var data=[]
+      result.map(item => {
+        data.push({name:item._id,value:item.value})
+      });
+      res.json({
+        success:true,
+        msg:"查询成功",
+        data:data,
+      });
+    }
+  })
+});
 
 module.exports = router;

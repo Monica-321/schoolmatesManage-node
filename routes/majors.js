@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Major=require("../mongo/majors");
+var Major=require("../models/majors");
 
 //专业json例子
 // {

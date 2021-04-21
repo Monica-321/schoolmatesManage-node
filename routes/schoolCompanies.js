@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var SchoolCompany=require("../mongo/schoolCompanies");
+var SchoolCompany=require("../models/schoolCompanies");
 
   //查询校友企业
   router.post('/schoolCompaniesList', function(req, res, next) {

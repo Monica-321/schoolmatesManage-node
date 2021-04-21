@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var SchoolAdmin=require("../mongo/schoolAdmins");
+var SchoolAdmin=require("../models/schoolAdmins");
 
 //TODO 简易登录逻辑
   router.post('/login', function(req, res, next) {
@@ -9,6 +9,7 @@ var SchoolAdmin=require("../mongo/schoolAdmins");
       username:req.body["username"],
       password:req.body["password"]
     });
+    console.log('loginInfo',loginInfo)
     SchoolAdmin.find({username:loginInfo.username},function(err,result){
       if(err){
           res.json({success:false,msg:"查询发生错误"});
