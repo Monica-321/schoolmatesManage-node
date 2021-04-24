@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var SchoolCompany=require("../models/schoolCompanies");
-
+const util=require('../utils/index');
   //查询校友企业
-  router.post('/schoolCompaniesList', function(req, res, next) {
+  router.post('/schoolCompaniesList',util.ensureAuthorized, function(req, res, next) {
     console.log('schoolCompaniesList',req.body)
     const params={...req.body}
     delete params.pageNum
@@ -34,7 +34,7 @@ var SchoolCompany=require("../models/schoolCompanies");
   });
 
     //添加校友企业
-  router.post('/schoolCompaniesCreate', function(req, res) {
+  router.post('/schoolCompaniesCreate', util.ensureAuthorized,function(req, res) {
     console.log('schoolCompaniesCreate',req.body)
     const params={
       ...req.body
@@ -55,7 +55,7 @@ var SchoolCompany=require("../models/schoolCompanies");
   });
 
   //编辑校友企业
-  router.post('/schoolCompaniesUpdate', function(req, res, next) {
+  router.post('/schoolCompaniesUpdate',util.ensureAuthorized, function(req, res, next) {
     const {_id,companyName,companyType,companySize,companyCity,companyAddress,companyWebsite,companyPhone,companyEmail,companyDescription}=req.body
     SchoolCompany.updateOne({_id},
       { $set:{companyName,companyType,companySize,companyCity,companyAddress,companyWebsite,companyPhone,companyEmail,companyDescription}},function (err, result) {
@@ -73,7 +73,7 @@ var SchoolCompany=require("../models/schoolCompanies");
   });
 
   //查询校友企业详情
-  router.get('/schoolCompaniesDetail', function(req, res, next) {
+  router.get('/schoolCompaniesDetail',util.ensureAuthorized, function(req, res, next) {
     const _id=req.query._id
     SchoolCompany.find({_id:_id},function (err,result){
       if(err){
@@ -99,7 +99,7 @@ var SchoolCompany=require("../models/schoolCompanies");
   });
 
   //删除校友企业
-  router.post('/schoolCompaniesDelete', function(req, res, next) {
+  router.post('/schoolCompaniesDelete',util.ensureAuthorized, function(req, res, next) {
     const {_id}=req.body
     SchoolCompany.deleteOne({_id},
       function (err, result) {

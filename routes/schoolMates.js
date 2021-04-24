@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var SchoolMate=require("../models/schoolMates");
+const util=require('../utils/index');
 
   //查询校友
-  router.post('/schoolMatesList', function(req, res, next) {
+  router.post('/schoolMatesList',util.ensureAuthorized, function(req, res, next) {
     console.log('schoolMatesList',req.body)
     const params={...req.body}
     delete params.pageNum
@@ -34,7 +35,7 @@ var SchoolMate=require("../models/schoolMates");
   });
 
   //检查学号
-  router.get('/schoolMatesIdCheck', function(req, res, next) {
+  router.get('/schoolMatesIdCheck',util.ensureAuthorized, function(req, res, next) {
     const id=req.query.id
     console.log('schoolMatesIdCheck',req.query)
     SchoolMate.find({id:id},function (err,result){
@@ -60,7 +61,7 @@ var SchoolMate=require("../models/schoolMates");
   });
 
     //添加校友
-  router.post('/schoolMatesCreate', function(req, res) {
+  router.post('/schoolMatesCreate',util.ensureAuthorized, function(req, res) {
     // console.log('schoolMatesCreate',req.body);  //没有req.body？body-parser
     const params={
       ...req.body
@@ -87,7 +88,7 @@ var SchoolMate=require("../models/schoolMates");
   });
 
   //编辑校友
-  router.post('/schoolMatesUpdate', function(req, res, next) {
+  router.post('/schoolMatesUpdate',util.ensureAuthorized, function(req, res, next) {
     const {id,name,gender,nationality,birthDate,faculty,educationStatus,politicalStatus,
       homeTown,srcPlace,dstPlace,yearOfEnrollment,yearOfGraduation,major,majorClass,graduateChoice,
       contactPhone,contactEmail,contactAddress,workArea,job,companyRank,companySize,salary}=req.body
@@ -109,7 +110,7 @@ var SchoolMate=require("../models/schoolMates");
   });
 
   //查询校友详情
-  router.get('/schoolMatesDetail', function(req, res, next) {
+  router.get('/schoolMatesDetail',util.ensureAuthorized, function(req, res, next) {
     const id=req.query.id
     // console.log('查询校友详情的req\n',req.query,id);
     SchoolMate.find({id:id},function (err,result){
@@ -137,7 +138,7 @@ var SchoolMate=require("../models/schoolMates");
   });
 
   //删除校友
-  router.post('/schoolMatesDelete', function(req, res, next) {
+  router.post('/schoolMatesDelete',util.ensureAuthorized, function(req, res, next) {
     const {id}=req.body
     SchoolMate.deleteOne({id},
       function (err, result) {
@@ -158,7 +159,7 @@ var SchoolMate=require("../models/schoolMates");
 
 
  //查询专业与班级数（影像tab）
- router.get('/getMajorAndClass', function(req, res, next) {
+ router.get('/getMajorAndClass',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus}},

@@ -5,6 +5,7 @@ const multer  = require('multer');
 const path = require('path')
 const fs = require('fs')
 const dirPath = path.join('./public/images/graduateMedias/')
+const util=require('../utils/index');
 
 const upload = multer({storage:
     multer.diskStorage({
@@ -18,7 +19,7 @@ const upload = multer({storage:
 const uploadSingle = upload.single('file')
 
   //查询各班级影像
-  router.post('/getClassPics', function(req, res, next) {
+  router.post('/getClassPics',util.ensureAuthorized, function(req, res, next) {
     console.log('getClassPics',req.body)
     const params={...req.body}
     GraduateMedia.find({...params}).exec((err, result) => {
@@ -38,7 +39,7 @@ const uploadSingle = upload.single('file')
   });
 
   //上传影像
-  router.post('/graduateMediaUp',function(req, res, next){
+  router.post('/graduateMediaUp',util.ensureAuthorized,function(req, res, next){
     uploadSingle(req, res, function (err) { //上传图片操作
       if (err) {
         res.json({
@@ -63,7 +64,7 @@ const uploadSingle = upload.single('file')
   })
 
   //添加（包含图片的）影像信息
-  router.post('/graduateMediaAdd',function(req, res, next){
+  router.post('/graduateMediaAdd',util.ensureAuthorized,function(req, res, next){
   console.log('graduateMediaAdd',req.body)
   const {yearOfGraduation,educationStatus,major,majorClass,img}=req.body
   GraduateMedia.find({yearOfGraduation,educationStatus,major,majorClass},function (err,result){
@@ -111,7 +112,7 @@ const uploadSingle = upload.single('file')
   });
 
   // 删除图片？
-router.post('/graduateMediaDelete', (req, res) => {
+router.post('/graduateMediaDelete', util.ensureAuthorized,(req, res) => {
   const {
     _id,
     imgName

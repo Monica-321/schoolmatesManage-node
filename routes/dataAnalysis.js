@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var SchoolMate=require("../models/schoolMates");
+const util=require('../utils/index');
+
 // import {mapData} from '../public/usefulData'
 
 const mapData=[
@@ -147,7 +149,7 @@ const mapData=[
 ];
 
 //学历结构
-router.get('/getEducationRate', function(req, res, next) {
+router.get('/getEducationRate',util.ensureAuthorized, function(req, res, next) {
   const {yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation}},
@@ -178,7 +180,7 @@ router.get('/getEducationRate', function(req, res, next) {
 });
 
 //性别比例
-router.get('/getGenderRate', function(req, res, next) {
+router.get('/getGenderRate',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     // TODO 有educationStatus查出来都是空?
@@ -212,7 +214,7 @@ router.get('/getGenderRate', function(req, res, next) {
 });
 
 //专业人数
-router.get('/getMajorNum', function(req, res, next) {
+router.get('/getMajorNum',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{educationStatus,yearOfGraduation}},
@@ -240,7 +242,7 @@ router.get('/getMajorNum', function(req, res, next) {
 });
 
 //政治面貌
-router.get('/getPoliticalSta', function(req, res, next) {
+router.get('/getPoliticalSta', util.ensureAuthorized,function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{educationStatus,yearOfGraduation}},
@@ -267,7 +269,7 @@ router.get('/getPoliticalSta', function(req, res, next) {
 });
 
 //籍贯
-router.get('/getHomePlace', function(req, res, next) {
+router.get('/getHomePlace',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus}},
@@ -306,7 +308,7 @@ router.get('/getHomePlace', function(req, res, next) {
 });
 
 //生源地
-router.get('/getSrcPlace', function(req, res, next) {
+router.get('/getSrcPlace',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus}},
@@ -345,7 +347,7 @@ router.get('/getSrcPlace', function(req, res, next) {
 });
 
  //毕业去向（选择）
-router.get('/getGraduateOption', function(req, res, next) {
+router.get('/getGraduateOption',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus}},
@@ -377,7 +379,7 @@ router.get('/getGraduateOption', function(req, res, next) {
 });
 
  //毕业去向城市（不看是否就业）
- router.get('/getDstPlace', function(req, res, next) {
+ router.get('/getDstPlace',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus}},
@@ -418,7 +420,7 @@ router.get('/getGraduateOption', function(req, res, next) {
 });
 
  //毕业单位行业
- router.get('/getCompanyIndus', function(req, res, next) {
+ router.get('/getCompanyIndus',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus,graduateChoice:'就业'}},
@@ -450,7 +452,7 @@ router.get('/getGraduateOption', function(req, res, next) {
 });
 
  //毕业单位规模
- router.get('/getCompanyScale', function(req, res, next) {
+ router.get('/getCompanyScale', util.ensureAuthorized,function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{yearOfGraduation,educationStatus,graduateChoice:'就业'}},
@@ -481,7 +483,7 @@ router.get('/getGraduateOption', function(req, res, next) {
 });
 
  //毕业单位排名
- router.get('/getCompanyRank', function(req, res, next) {
+ router.get('/getCompanyRank',util.ensureAuthorized, function(req, res, next) {
   const {educationStatus,yearOfGraduation}=req.query
   SchoolMate.aggregate([
     {$match:{educationStatus,yearOfGraduation,graduateChoice:'就业'}},

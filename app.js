@@ -16,6 +16,15 @@ app.get('/', function(req,res){
 app.use(bodyParser.json());	
 // 解析 application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+var expressJwt = require("express-jwt");
+// jwt中间件
+app.use(expressJwt({
+  credentialsRequired: false,//关键
+  secret: "secret12345",//加密密钥，可换
+  algorithms:['HS256'], //加密算法
+}).unless({
+    path: ["/api/schoolAdmins/login"]//添加不需要token验证的路由 
+}));
 
 app.use('/api/schoolAdmins', schoolAdminRouter);
 app.use('/api/schoolMates', schoolMateRouter);
