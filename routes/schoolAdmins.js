@@ -33,7 +33,7 @@ const util=require('../utils/index');
                 superAdmin: user.identity === 0
               },
               'secret12345',
-              { expiresIn: 5*60 } //设置过期，s单位 
+              { expiresIn: 60*60 } //设置过期，s单位 
             )
             // delete user.password?
             res.json({
@@ -227,6 +227,10 @@ const util=require('../utils/index');
               {
                   "name" : "校友单位信息管理",
                   "url" : "/infoManage/schoolCompanyManage"
+              }, 
+              {
+                  "name" : "活动公告管理",
+                  "url" : "/infoManage/schoolPostsManage"
               }
           ]
       }, 
