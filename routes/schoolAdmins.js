@@ -10,7 +10,7 @@ const util=require('../utils/index');
       username:req.body["username"],
       password:req.body["password"]
     });
-    console.log('loginInfo',loginInfo)
+    // console.log('loginInfo',loginInfo)
     SchoolAdmin.find({username:loginInfo.username},function(err,result){
       if(err){
           res.json({success:false,msg:"查询发生错误"});
@@ -25,7 +25,6 @@ const util=require('../utils/index');
             res.json({success:false,msg:"用户名与密码不匹配"});
           }else{
             if(user.status){
-              // 注意默认情况 Token 必须以 Bearer+空格 开头 why??我先去掉了
               // 生成token
             const token =jwt.sign(
               {
@@ -40,13 +39,7 @@ const util=require('../utils/index');
               success:true,
               msg:"登录成功",
               data:{token,...user._doc}, 
-              //单传user就是正常文档，加一起就多出很多东西只好._doc
             })
-              // res.json({
-              //   success:true,
-              //   msg:"登录成功",
-              //   data:user
-              // });
             }else{//用户停用
               res.json({success:false,msg:"该账户已停用"});
             }

@@ -2,13 +2,12 @@ var Mock = require('mockjs');
 var mongoose = require('mongoose');
 Mock.Random.extend({
   phone: function () {
-    var phonePrefixs = ['132', '135', '189'] // 自己写前缀哈
-    return this.pick(phonePrefixs) + Mock.mock(/\d{8}/) //Number()
+    var phonePrefixs = ['132', '135', '189'] 
+    return this.pick(phonePrefixs) + Mock.mock(/\d{8}/) 
   }
 });
 
-// 操作 mongodb 一共有 3 步：
-// 1,"创建数据结构
+// 创建数据结构
 var Schema = mongoose.Schema;
 var schoolMateSchema = new Schema({
   id: { type: String, unique: true },//学号[入学年份+3296+【5number】]

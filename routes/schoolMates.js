@@ -156,37 +156,44 @@ const util=require('../utils/index');
   });
 
   //批量添加？
+  router.post('/matesBatchCreation',util.ensureAuthorized, function(req, res) {
+    console.log('matesBatchCreation',req.body);  //没有req.body？body-parser
+    const params=[
+      ...req.body
+    ]
+    //先每条查是否有重复，有则直接返回失败(说哪几条重复)，一条都没有重复则进行下一步统一添加去重复数据
+    // let arr=JSON.parse(JSON.stringify(params))
+    // //查询重复学号
+    // params.map((item,index)=>{
+    //   SchoolMate.find({id:item.id},function (err,result){
+    //     console.log('result\n',result,result.length)
+    //     if(result.length>0){
+    //       arr.splice(index,1)  //有问题
+    //     }
+    //   })
+    // })
+    // console.log("arr\n",arr)
 
+    //没有重复学号的添加进去(先直接添加，失败返回)
+    SchoolMate.insertMany(params,function (err,ret){
+      if(err){
+        console.log('添加失败的err，',err);
+        //TODO 具体错误？
+        res.json({
+          success:false,
+          msg:"有数据添加失败！请检查学号是否重复",
+        });
+      }
+      else {
+          // console.log('插入成功',ret);  //ret是成功的数据
+          res.json({
+            success:true,
+            msg:"添加成功",
+            // data:1
+          });
+      }
+    });
+  });
 
- //查询专业与班级数（影像tab）
- router.get('/getMajorAndClass',util.ensureAuthorized, function(req, res, next) {
-  const {educationStatus,yearOfGraduation}=req.query
-  SchoolMate.aggregate([
-    {$match:{yearOfGraduation,educationStatus}},
-    {$group:
-        {
-            _id:'$major',
-            value:{$sum:1}
-        }
-    }
-  ],function (err,result){
-    if(err){
-      res.json({
-        success:false,
-        msg:"查询失败",
-      });
-    }else{
-      var data=[]
-      result.map(item => {
-        data.push({name:item._id,value:item.value})
-      });
-      res.json({
-        success:true,
-        msg:"查询成功",
-        data:data,
-      });
-    }
-  })
-});
 
 module.exports = router;

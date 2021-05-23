@@ -55,7 +55,7 @@ const util=require('../utils/index');
     })
   });
 
-  //编辑校友企业
+  //编辑
   router.post('/schoolPostsUpdate',util.ensureAuthorized, function(req, res, next) {
     const {_id,title,time,address,context,method}=req.body
     SchoolPost.updateOne({_id},

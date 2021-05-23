@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var GraduateMedia=require("../models/graduateMedias");
+const util=require('../utils/index');
 const multer  = require('multer');
 const path = require('path')
 const fs = require('fs')
 const dirPath = path.join('./public/images/graduateMedias/')
-const util=require('../utils/index');
-
 const upload = multer({storage:
     multer.diskStorage({
     destination: function (req, file, cb) {
@@ -17,7 +16,6 @@ const upload = multer({storage:
   })
 });
 const uploadSingle = upload.single('file')
-
   //查询各班级影像
   router.post('/getClassPics',util.ensureAuthorized, function(req, res, next) {
     console.log('getClassPics',req.body)
@@ -37,7 +35,6 @@ const uploadSingle = upload.single('file')
     }
     })
   });
-
   //上传影像
   router.post('/graduateMediaUp',util.ensureAuthorized,function(req, res, next){
     uploadSingle(req, res, function (err) { //上传图片操作
